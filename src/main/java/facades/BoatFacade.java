@@ -3,12 +3,15 @@ package facades;
 import dtos.BoatDTO;
 import entities.Boat;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 //import errorhandling.RenameMeNotFoundException;
+import entities.Harbour;
+import entities.User;
 import utils.EMF_Creator;
 
 /**
@@ -68,4 +71,39 @@ public class BoatFacade {
         return BoatDTO.getDtos(rms);
     }
 
+    public List<User> getAllOwnersByID(long id) {
+        EntityManager em = emf.createEntityManager();
+        Boat boat = em.find(Boat.class, id);
+        return boat.getOwners();
+    }
+
+    public Boat createBoat(BoatDTO boatDTO) {
+        EntityManager em = emf.createEntityManager();
+
+        List<User> owners = new ArrayList<>();
+        for (String owner : boatDTO.getOwners()) {
+            User user = em.find(User.class,owner);
+            owners.add(user);
+        }
+        Harbour harbour = em.find(Harbour.class, boatDTO.getHarbourID());
+        Boat boat = new Boat(boatDTO.getBrand(), boatDTO.getMake(), boatDTO.getName(), boatDTO.getImage(), owners, harbour);
+
+        try {
+            em.getTransaction().begin();
+            harbour.addBoat(boat);
+            em.merge(harbour);
+
+            for (User owner : owners) {
+                owner.addBoat(boat);
+                em.merge(owner);
+            }
+
+            em.persist(boat);
+            em.getTransaction().commit();
+
+            return boat;
+        } finally {
+            em.close();
+        }
+    }
 }

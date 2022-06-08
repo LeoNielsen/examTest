@@ -6,7 +6,6 @@
 package dtos;
 
 import entities.Boat;
-import entities.Role;
 import entities.User;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class BoatDTO {
     private String name;
     private String image;
     private List<String> owners;
-    private String harbour;
+    private long harbourID;
 
     public BoatDTO(Boat boat) {
         if (boat.getId() != null)
@@ -32,7 +31,7 @@ public class BoatDTO {
         this.name = boat.getName();
         this.image = boat.getImage();
         this.owners = getOwners(boat.getOwners());
-        this.harbour = boat.getHarbour().getName();
+        this.harbourID = boat.getHarbour().getId();
     }
 
     public List<String> getOwners(List<User> owners) {
@@ -47,5 +46,33 @@ public class BoatDTO {
         List<BoatDTO> boatDTOS = new ArrayList();
         boats.forEach(boat -> boatDTOS.add(new BoatDTO(boat)));
         return boatDTOS;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getMake() {
+        return make;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public List<String> getOwners() {
+        return owners;
+    }
+
+    public long getHarbourID() {
+        return harbourID;
     }
 }

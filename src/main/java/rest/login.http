@@ -6,3 +6,8 @@ POST http://localhost:8080/devops_starter_war_exploded/api/login
 POST http://localhost:8080/ca2_startcode_backend_war_exploded/api/info/newuser
 
 {"userName":"user2", "userPass":"test123"}
+
+###
+POST http://localhost:8080/ex_startcode_backend_war/api/boat/createboat
+
+{"brand" : "1", "make" : "2", "name" : "3", "image" : "4","owners" : ["admin"], "harbourID" : "1"}

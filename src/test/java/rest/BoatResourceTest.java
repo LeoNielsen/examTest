@@ -2,6 +2,7 @@ package rest;
 
 import entities.Boat;
 import entities.Harbour;
+import entities.User;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -16,6 +17,8 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,11 +69,19 @@ public class BoatResourceTest {
         EntityManager em = emf.createEntityManager();
         boat = new Boat("Some txt", "More text", "name", "image", new ArrayList<>(), null);
         boat1 = new Boat("aaa", "bbb", "ccc", "ddd", new ArrayList<>(), null);
+
+        User user = new User("Henny", "test123", new ArrayList<>());
+        user.addBoat(boat);
+        boat.getOwners().add(user);
+
+
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
+            em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.persist(boat);
             em.persist(boat1);
+            em.persist(user);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -93,4 +104,13 @@ public class BoatResourceTest {
                 .body("msg", equalTo("Hello World"));
     }
 
+    @Test
+    void getAllOwnersByID() {
+        given()
+                .contentType("application/json")
+                .get("/boat/{id}/allowners", 2L).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("userName", hasItem("Henny"));
+    }
 }
