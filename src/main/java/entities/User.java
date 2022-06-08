@@ -36,6 +36,12 @@ public class User implements Serializable {
   @ManyToMany
   private List<Role> roleList = new ArrayList<>();
 
+  private String name;
+  private String address;
+  private String phone;
+  @ManyToMany
+  private List<Boat> boats = new ArrayList<>();
+
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
       return null;
@@ -65,6 +71,15 @@ public class User implements Serializable {
     this.roleList = roleList;
   }
 
+  public User(String userName, String userPass, List<Role> roleList, String name, String address, String phone, List<Boat> boats) {
+    this.userName = userName;
+    this.userPass = userPass;
+    this.roleList = roleList;
+    this.name = name;
+    this.address = address;
+    this.phone = phone;
+    this.boats = boats;
+  }
 
   public String getUserName() {
     return userName;
@@ -92,6 +107,42 @@ public class User implements Serializable {
 
   public void addRole(Role userRole) {
     roleList.add(userRole);
+  }
+
+  public List<Boat> getBoats() {
+    return boats;
+  }
+
+  public void setBoats(List<Boat> boats) {
+    this.boats = boats;
+  }
+
+  public void addBoat(Boat boat) {
+    boats.add(boat);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
 }

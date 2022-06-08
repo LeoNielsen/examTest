@@ -1,30 +1,37 @@
 package facades;
 
+import entities.Boat;
+import entities.Harbour;
 import utils.EMF_Creator;
-import entities.RenameMe;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-public class FacadeExampleTest {
+public class BoatFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static BoatFacade facade;
 
-    public FacadeExampleTest() {
+    public BoatFacadeTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
-       emf = EMF_Creator.createEntityManagerFactoryForTest();
-       facade = FacadeExample.getFacadeExample(emf);
+        emf = EMF_Creator.createEntityManagerFactoryForTest();
+        facade = BoatFacade.getFacadeExample(emf);
     }
 
     @AfterAll
@@ -39,9 +46,9 @@ public class FacadeExampleTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
+            em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
+            em.persist(new Boat("Some txt", "More text", "even more text", "image", new ArrayList<>(), new Harbour()));
+            em.persist(new Boat("aaa", "bbb", "ccc", "ddd", new ArrayList<>(), new Harbour()));
 
             em.getTransaction().commit();
         } finally {
@@ -54,11 +61,6 @@ public class FacadeExampleTest {
 //        Remove any data after each test was run
     }
 
-    // TODO: Delete or change this method 
-    @Test
-    public void testAFacadeMethod() throws Exception {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
-    }
-    
+
 
 }
