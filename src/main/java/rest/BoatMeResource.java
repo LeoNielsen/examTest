@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("xxx")
+@Path("boat")
 public class BoatMeResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
@@ -21,7 +21,7 @@ public class BoatMeResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String demo() {
-        return "{\"msg\":\"Hello World\"}";
+        return "{\"msg\":\"Hello World from boats\"}";
     }
 
 }

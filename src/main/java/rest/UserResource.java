@@ -20,7 +20,7 @@ import utils.EMF_Creator;
 /**
  * @author lam@cphbusiness.dk
  */
-@Path("info")
+@Path("user")
 public class UserResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
@@ -40,7 +40,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("all")
-    public String allUsers() {
+    public String all() {
 
         EntityManager em = EMF.createEntityManager();
         try {
@@ -50,6 +50,15 @@ public class UserResource {
         } finally {
             em.close();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("allusers")
+    public String allUsers() {
+        List<User> owners = UserFacade.getUserFacade(EMF).getAllUsers();
+        List<UserDTO> userDTOS = UserDTO.getUsers(owners);
+        return GSON.toJson(userDTOS);
     }
 
     @GET

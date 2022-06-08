@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 
 @Entity
+@Table(name = "boat")
 @NamedQuery(name = "Boat.deleteAllRows", query = "DELETE from Boat")
 public class Boat implements Serializable {
 

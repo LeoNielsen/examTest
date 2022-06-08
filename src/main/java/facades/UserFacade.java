@@ -4,7 +4,11 @@ import entities.Role;
 import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+
 import security.errorhandling.AuthenticationException;
+
+import java.util.List;
 
 /**
  * @author lam@cphbusiness.dk
@@ -64,6 +68,16 @@ public class UserFacade {
             em.close();
         }
         return user;
+    }
+
+    public List<User> getAllUsers() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<User> query = em.createQuery ("select u from User u",entities.User.class);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     //ToDo: register admin, possibly change name and password

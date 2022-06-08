@@ -29,6 +29,14 @@ public class UserDTO
         this.boats = getBoats(user.getBoats());
     }
 
+    public static List<UserDTO> getUsers(List<User> users) {
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(new UserDTO(user));
+        }
+        return userDTOs;
+    }
+
     public User toUser () {
         return new User(this.userName, this.userPass);
     }

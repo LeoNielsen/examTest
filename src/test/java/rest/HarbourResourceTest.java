@@ -2,32 +2,31 @@ package rest;
 
 import entities.Boat;
 import entities.Harbour;
-import utils.EMF_Creator;
 import io.restassured.RestAssured;
-import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
-import java.net.URI;
-import java.util.ArrayList;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import static org.hamcrest.Matchers.equalTo;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-//Uncomment the line below, to temporarily disable this test
-//@Disabled
+import org.junit.jupiter.api.*;
+import utils.EMF_Creator;
 
-public class BoatResourceTest {
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+import java.util.ArrayList;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class HarbourResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static Boat boat, boat1;
+    private static Harbour harbour;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -60,37 +59,41 @@ public class BoatResourceTest {
         httpServer.shutdownNow();
     }
 
-    // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         EntityManager em = emf.createEntityManager();
-        boat = new Boat("Some txt", "More text", "name", "image", new ArrayList<>(), null);
-        boat1 = new Boat("aaa", "bbb", "ccc", "ddd", new ArrayList<>(), null);
+        harbour = new Harbour("hamborg", "hamborg vej 1", 150, new ArrayList<>());
+        boat = new Boat("Some txt", "More text", "name", "image", new ArrayList<>(), harbour);
+        boat1 = new Boat("aaa", "bbb", "ccc", "ddd", new ArrayList<>(), harbour);
+
+        harbour.addBoat(boat);
+        harbour.addBoat(boat1);
+        harbour.setId(1L);
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Harbour.deleteAllRows").executeUpdate();
             em.persist(boat);
             em.persist(boat1);
+            em.persist(harbour);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
 
-    @Test
-    public void testServerIsUp() {
-        given().when().get("/boat").then().statusCode(200);
+    @AfterEach
+    void tearDown() {
     }
 
-    //This test assumes the database contains two rows
     @Test
-    public void testDummyMsg() throws Exception {
+    void getBoats() {
         given()
                 .contentType("application/json")
-                .get("/boat/").then()
+                .when()
+                .get("/harbour/{id}/allboats", 1).then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("msg", equalTo("Hello World"));
+                .body("name" , hasItems("ccc", "name"));
     }
-
 }
