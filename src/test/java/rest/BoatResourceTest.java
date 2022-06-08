@@ -68,11 +68,12 @@ public class BoatResourceTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
         boat = new Boat("Some txt", "More text", "name", "image", new ArrayList<>(), null);
-        boat1 = new Boat("aaa", "bbb", "ccc", "ddd", new ArrayList<>(), null);
 
         User user = new User("Henny", "test123", new ArrayList<>());
         user.addBoat(boat);
         boat.getOwners().add(user);
+        Harbour harbour = new Harbour("h","h", 150,new ArrayList<>());
+
 
 
         try {
@@ -80,17 +81,16 @@ public class BoatResourceTest {
             em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.persist(boat);
-            em.persist(boat1);
             em.persist(user);
+            em.persist(harbour);
+
             em.getTransaction().commit();
+
+
+
         } finally {
             em.close();
         }
-    }
-
-    @Test
-    public void testServerIsUp() {
-        given().when().get("/boat").then().statusCode(200);
     }
 
     //This test assumes the database contains two rows
@@ -101,16 +101,32 @@ public class BoatResourceTest {
                 .get("/boat/").then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("msg", equalTo("Hello World"));
+                .body("msg", equalTo("Hello World from boats"));
     }
 
+//    @Test
+//    void getAllOwnersByID() {
+//        given()
+//                .contentType("application/json")
+//                .get("/boat/{id}/allowners", 1L).then()
+//                .assertThat()
+//                .statusCode(HttpStatus.OK_200.getStatusCode())
+//                .body("userName", hasItem("Henny"));
+//    }
+
     @Test
-    void getAllOwnersByID() {
+    void createBoat() {
         given()
                 .contentType("application/json")
-                .get("/boat/{id}/allowners", 2L).then()
+                .and()
+                .body("{\"brand\" : \"1\", \"make\" : \"2\", \"name\" : \"3\", \"image\" : \"4\",\"owners\" : [\"Henny\"], \"harbourID\" : \"1\"}")
+                .when()
+                .post("/boat/createboat")
+                .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("userName", hasItem("Henny"));
+                .body("name", equalTo("3"));
+
+
     }
 }
