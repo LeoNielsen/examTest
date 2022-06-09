@@ -1,6 +1,7 @@
 package facades;
 
 import entities.Boat;
+import entities.Harbour;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,5 +45,22 @@ public class HarbourFacade {
         query.setParameter("id", id);
 
         return query.getResultList();
+    }
+
+    public Boat addBoatToHarbour(long harbourId, long boatId) {
+        EntityManager em = emf.createEntityManager();
+
+        Harbour harbour = em.find(Harbour.class, harbourId);
+        Boat boat = em.find(Boat.class, boatId);
+
+        harbour.addBoat(boat);
+        boat.setHarbour(harbour);
+
+        em.getTransaction().begin();
+        em.merge(boat);
+        em.merge(harbour);
+        em.getTransaction().commit();
+
+        return boat;
     }
 }

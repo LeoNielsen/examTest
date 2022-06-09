@@ -9,10 +9,7 @@ import facades.HarbourFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -37,6 +34,17 @@ public class HarbourResource {
         List<BoatDTO> boatDTOS = BoatDTO.getDtos(boatList);
 
         return GSON.toJson(boatDTOS);
+    }
+
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("/{hid}/addboat/{bid}")
+    public String addBoat(@PathParam("hid") long harbourId, @PathParam("bid") long boatId){
+        Boat boat = FACADE.addBoatToHarbour(harbourId, boatId);
+        BoatDTO boatDTO =new BoatDTO(boat);
+
+        return GSON.toJson(boatDTO);
     }
 
 }
