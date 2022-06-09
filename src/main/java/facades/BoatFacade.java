@@ -106,4 +106,40 @@ public class BoatFacade {
             em.close();
         }
     }
+
+    public Boat updateBoat(long id, BoatDTO boatDTO) {
+        EntityManager em = emf.createEntityManager();
+
+        Boat oldBoat = em.find(Boat.class, id);
+
+        List<User> owners = new ArrayList<>();
+        for (String owner : boatDTO.getOwners()) {
+            User user = em.find(User.class, owner);
+            owners.add(user);
+        }
+
+        Harbour oldHarbour = em.find(Harbour.class, oldBoat.getHarbour().getId());
+        Harbour newHarbour = em.find(Harbour.class, boatDTO.getHarbourID());
+        oldHarbour.removeBoat(oldBoat);
+        Boat newBoat = new Boat(boatDTO.getBrand(), boatDTO.getMake(), boatDTO.getName(), boatDTO.getImage(), owners, newHarbour);
+        newBoat.setId(id);
+        newHarbour.addBoat(newBoat);
+
+        em.getTransaction().begin();
+        em.merge(newBoat);
+        em.merge(newHarbour);
+        em.merge(oldHarbour);
+
+        for (User owner : oldBoat.getOwners()) {
+            owner.removeBoat(oldBoat);
+            em.merge(owner);
+        }
+        for (User owner : owners) {
+            owner.addBoat(newBoat);
+            em.merge(newBoat);
+        }
+        em.getTransaction().commit();
+
+        return newBoat;
+    }
 }

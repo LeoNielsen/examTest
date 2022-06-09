@@ -36,8 +36,8 @@ public class BoatResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static Boat boat, boat1;
-    private static Harbour harbour;
-    private static User user;
+    private static Harbour harbour, harbour1;
+    private static User user, user2;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -81,20 +81,30 @@ public class BoatResourceTest {
         boat1 = new Boat("aaa", "bbb", "ccc", "image", new ArrayList<>(), null);
 
         user = new User("Henny", "test123", new ArrayList<>());
+        user2 = new User("Bob", "test123", new ArrayList<>());
         user.addBoat(boat);
+        user.addBoat(boat1);
         boat.getOwners().add(user);
+        boat1.getOwners().add(user);
         harbour = new Harbour("h", "h", 150, new ArrayList<>());
+        harbour1 = new Harbour("h1", "h1", 150, new ArrayList<>());
+
+        boat.setHarbour(harbour);
+        harbour.addBoat(boat);
 
         try {
             em.getTransaction().begin();
+            em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
             em.createNamedQuery("Harbour.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("Role.deleteAllRows").executeUpdate();
-            em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
 
             em.persist(boat);
+            em.persist(boat1);
             em.persist(user);
+            em.persist(user2);
             em.persist(harbour);
+            em.persist(harbour1);
 
             em.getTransaction().commit();
 
@@ -106,8 +116,6 @@ public class BoatResourceTest {
 
     @AfterEach
     void tearDown() {
-        EntityManager em = emf.createEntityManager();
-        em.createNativeQuery("DROP TABLE *");
     }
 
     //This test assumes the database contains two rows
@@ -125,7 +133,7 @@ public class BoatResourceTest {
     void getAllOwnersByID() {
         given()
                 .contentType("application/json")
-                .get("/boat/{id}/allowners", boat.getId()).then()
+                .get("/boat/{id}/allowners", boat1.getId()).then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("userName", hasItem("Henny"));
@@ -151,6 +159,27 @@ public class BoatResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("name", equalTo("Lis"));
 
+
+    }
+
+    @Test
+    void updateBoat() {
+        List<User> owner = new ArrayList<>();
+        owner.add(user2);
+        Boat newBoat = new Boat("test2", "2000","Else","image",owner,harbour1);
+        BoatDTO boatDTO = new BoatDTO(newBoat);
+
+        given()
+                .contentType("application/json")
+                .and()
+                .body(GSON.toJson(boatDTO))
+                .when()
+                .put("/boat/{id}/updateboat", boat.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", equalTo("Else"))
+                .body("harbourID", equalTo(Integer.valueOf(String.valueOf(harbour1.getId()))));
 
     }
 }

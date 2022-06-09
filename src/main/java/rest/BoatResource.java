@@ -48,4 +48,17 @@ public class BoatResource {
         return GSON.toJson(new BoatDTO(boat));
     }
 
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("/{id}/updateboat")
+    public String updateBoat(@PathParam("id") long id, String data){
+        BoatDTO boatDTO = GSON.fromJson(data, BoatDTO.class);
+        Boat boat = FACADE.updateBoat(id, boatDTO);
+        boatDTO = new BoatDTO(boat);
+        return GSON.toJson(boatDTO);
+    }
+
+
+
 }

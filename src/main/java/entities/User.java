@@ -115,6 +115,8 @@ public class User implements Serializable {
     boats.add(boat);
   }
 
+  public void removeBoat(Boat boat) {boats.remove(boat);}
+
   public String getName() {
     return name;
   }
