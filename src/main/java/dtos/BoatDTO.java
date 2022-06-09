@@ -37,7 +37,7 @@ public class BoatDTO {
     public List<String> getOwners(List<User> owners) {
         List<String> ownerNames = new ArrayList<>();
         for (User owner : owners) {
-            ownerNames.add(owner.getName());
+            ownerNames.add(owner.getUserName());
         }
         return ownerNames;
     }

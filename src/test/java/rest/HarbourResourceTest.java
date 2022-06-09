@@ -19,7 +19,6 @@
 //
 //import static io.restassured.RestAssured.given;
 //import static org.hamcrest.Matchers.*;
-//import static org.junit.jupiter.api.Assertions.*;
 //
 //class HarbourResourceTest {
 //
@@ -73,6 +72,8 @@
 //            em.getTransaction().begin();
 //            em.createNamedQuery("Boat.deleteAllRows").executeUpdate();
 //            em.createNamedQuery("Harbour.deleteAllRows").executeUpdate();
+//            em.createNamedQuery("User.deleteAllRows").executeUpdate();
+//            em.createNamedQuery("Role.deleteAllRows").executeUpdate();
 //            em.persist(boat);
 //            em.persist(boat1);
 //            em.persist(harbour);

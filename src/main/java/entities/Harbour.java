@@ -16,7 +16,7 @@ public class Harbour {
     private String name;
     private String address;
     private int capacity;
-    @OneToMany
+    @OneToMany (mappedBy = "harbour")
     private List<Boat> boats = new ArrayList<>();
 
     public Harbour() {
