@@ -182,4 +182,19 @@ public class BoatResourceTest {
                 .body("harbourID", equalTo(Integer.valueOf(String.valueOf(harbour1.getId()))));
 
     }
+
+    @Test
+    void deleteBoat() {
+        given()
+                .contentType("application/json")
+                .and()
+                .when()
+                .delete("/boat/{id}/deleteboat", boat.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", equalTo("name"));
+
+
+    }
 }

@@ -16,3 +16,6 @@ POST http://localhost:8080/ex_startcode_backend_war/api/boat/createboat
 PUT http://localhost:8080/ex_startcode_backend_war/api/boat/1/updateboat
 
 {"brand" : "test1", "make" : "test1", "name" : "test1", "image" : "image","owners" : ["user"], "harbourID" : "1"}
+
+###
+DELETE http://localhost:8080/ex_startcode_backend_war/api/boat/1/deleteboat

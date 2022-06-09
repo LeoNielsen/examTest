@@ -59,6 +59,17 @@ public class BoatResource {
         return GSON.toJson(boatDTO);
     }
 
+    @DELETE
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Path("/{id}/deleteboat")
+    public String deleteBoat(@PathParam("id") long id){
+        Boat boat = FACADE.deleteBoat(id);
+        BoatDTO boatDTO = new BoatDTO(boat);
+
+        return GSON.toJson(boatDTO);
+    }
+
 
 
 }

@@ -142,4 +142,26 @@ public class BoatFacade {
 
         return newBoat;
     }
+
+    public Boat deleteBoat(long id) {
+        EntityManager em = emf.createEntityManager();
+
+        Boat boat = em.find(Boat.class, id);
+
+        em.getTransaction().begin();
+
+        boat.getHarbour().removeBoat(boat);
+        em.merge(boat.getHarbour());
+
+        for (User owner: boat.getOwners()) {
+            owner.removeBoat(boat);
+            em.merge(owner);
+        }
+
+        em.remove(boat);
+
+        em.getTransaction().commit();
+
+        return boat;
+    }
 }
