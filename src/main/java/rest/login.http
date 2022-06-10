@@ -19,3 +19,6 @@ PUT http://localhost:8080/ex_startcode_backend_war/api/boat/1/updateboat
 
 ###
 DELETE http://localhost:8080/ex_startcode_backend_war/api/boat/1/deleteboat
+
+###
+GET http://localhost:8080/examTest_war_exploded/api/harbour/all

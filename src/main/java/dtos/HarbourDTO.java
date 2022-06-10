@@ -31,4 +31,10 @@ public class HarbourDTO {
         return stringBoats;
     }
 
+    public static List<HarbourDTO> getDtos(List<Harbour> harbours) {
+        List<HarbourDTO> harbourDTOS = new ArrayList();
+        harbours.forEach(harbour -> harbourDTOS.add(new HarbourDTO(harbour)));
+        return harbourDTOS;
+    }
+
 }
