@@ -121,6 +121,7 @@ public class BoatFacade {
         Harbour oldHarbour = em.find(Harbour.class, oldBoat.getHarbour().getId());
         Harbour newHarbour = em.find(Harbour.class, boatDTO.getHarbourID());
         oldHarbour.removeBoat(oldBoat);
+
         Boat newBoat = new Boat(boatDTO.getBrand(), boatDTO.getMake(), boatDTO.getName(), boatDTO.getImage(), owners, newHarbour);
         newBoat.setId(id);
         newHarbour.addBoat(newBoat);

@@ -11,6 +11,7 @@ import facades.BoatFacade;
 import facades.HarbourFacade;
 import utils.EMF_Creator;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
@@ -56,6 +57,7 @@ public class HarbourResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("/all")
+    @RolesAllowed({"admin"})
     public String allHarbours() {
         EntityManager em = EMF.createEntityManager();
         try {
